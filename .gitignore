@@ -1,2 +1,11 @@
 template/
 .env
+__pycache__/
+.pytest_cache/
+.venv/
+cache/
+outputs/
+uploads/
+*.mp4
+*.m4a
+.DS_Store
