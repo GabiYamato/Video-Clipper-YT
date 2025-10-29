@@ -1,71 +1,53 @@
 # Video Clipper — YouTube downloader → engaging Shorts
 
-A minimal toolkit to download YouTube videos, auto-clip and reformat them into engaging YouTube Shorts. Designed for quick demos and iterative development (Docker + Streamlit UI).
+Video Clipper is a Streamlit-based toolkit that downloads long-form YouTube content (or local files) and turns the most relevant moments into 9:16-ready shorts. The UI stays focused on a single workflow while the heavy lifting happens inside `clipper.py`.
 
 ## Features
-- Download YouTube videos (configurable back-end: yt-dlp)
-- Trim and reformat to vertical shorts (crop, resize, subtitle overlay)
-- Simple Streamlit UI for quick clip creation and preview
-- Docker-ready for reproducible environments
-- Repo seeded with a demo video and images in `media/`
+- Download YouTube videos with `yt-dlp` and track progress inside the app
+- Trim any portion of the source video and convert it to a vertical 9:16 frame
+- Neuromorphic-themed Streamlit UI with light/dark toggle matching `theme.md`
+- Automatic output naming and download links for the rendered short clips
+- Unit tests covering trim-window clamping and crop math for regressions
 
-## Repo layout (suggested)
-- app.py                — Streamlit frontend
-- clipper.py            — core clip/transform logic
-- requirements.txt
-- Dockerfile
-- images/
-    - demo.mp4
-    - thumbnail.jpg
-    - overlays/
-- README.md
+## Repo layout
+- `app.py` — Streamlit front end
+- `clipper.py` — video download, trimming, and vertical formatting helpers
+- `.streamlit/config.toml` — base theme definition
+- `requirements.txt` — runtime and dev dependencies
+- `media/` — optional demo assets (empty by default)
+- `outputs/` — generated shorts (created at runtime)
+- `uploads/` — persisted local uploads (gitignored)
+- `cache/` — temporary downloads from YouTube (gitignored)
+- `tests/` — pytest suite for helper logic
 
-## Quick start (local)
-1. Clone the repo.
-2. Create a virtual environment and install:
-     pip install -r requirements.txt
-3. Run the Streamlit UI:
-     streamlit run app.py
-4. In the UI: paste a YouTube URL, choose start/end, select style, generate and preview the short.
-
-## Quick start (Docker)
-Build:
-docker build -t video-clipper .
-Run (dev):
-docker run --rm -p 8501:8501 -v "$(pwd)/images:/app/images" video-clipper
-
-Then open http://localhost:8501
-
-## Streamlit UI (notes)
-- Minimal single-page app for URL input, trimming controls, and style presets.
-- Provide upload/fallback to the `images/demo.mp4` for offline demos.
-- Expose an export button that saves result to `outputs/` and shows a download link.
-
-## requirements.txt (example)
-```text
-streamlit==1.24.1
-yt-dlp==2024.06.01
-moviepy==1.0.3
-opencv-python-headless==4.8.0.76
-numpy==1.26.2
-Pillow==10.1.0
+## Quick start
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
+pip install -r requirements.txt
+streamlit run app.py
 ```
 
-Adjust versions to your environment.
+1. Upload a video or paste a YouTube URL.
+2. Adjust the start and end markers (defaults to the first 30 seconds).
+3. Pick an export preset and generate the vertical short.
+4. Preview the result in the app or download the MP4 from the link provided.
 
-## Development tips
-- Keep heavy processing in worker functions (clipper.py) so the UI stays responsive.
-- Add automated tests for trimming logic and aspect-ratio conversions.
-- Version the Docker image and tag releases for reproducibility.
+## Tests
+Run the helper tests (no video assets required):
+```bash
+pytest
+```
 
-## Demo content
-- Place a short sample video at `images/demo.mp4` and thumbnails in `images/` to allow a standalone demo without network access.
+## Next steps
+- Add overlay presets (captions, brand frames) using MoviePy overlays.
+- Extend `clipper.py` with batching and automation hooks for multiple shorts.
+- Provide Dockerfile and deployment notes once the pipeline stabilises.
 
 ## Contributing
-- Open issues for feature requests/bugs.
-- Use branches and semantic tags for releases.
+- Open issues for enhancements or bugs.
+- Keep processing utilities in `clipper.py` and UI logic in `app.py` for clarity.
+- Follow the white-black neuromorphic rules in `theme.md` when styling UI additions.
 
 ## License
-Choose an appropriate license (e.g., MIT) and add a LICENSE file.
-
-That's it — scaffold the files above, add your Streamlit UI and clipper logic, and use Docker for a reproducible demo environment.
+Choose an appropriate license (e.g., MIT) and add a `LICENSE` file when ready.
